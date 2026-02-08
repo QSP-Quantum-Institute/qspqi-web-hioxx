@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useStepperStore } from "../../stores";
 import { fullNameSchema } from "../../common/schemas/stepperSchemas";
 import { cn } from "../../utils";
+import { StepTitle } from "../ui/StepTitle";
 
 export function NameStep() {
   const { data, updateData, errors, setError } = useStepperStore();
@@ -42,16 +43,9 @@ export function NameStep() {
 
   return (
     <div className="w-full">
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-12"
-      >
-        <h2 className="text-4xl md:text-5xl font-light text-dark/80 mb-4">
-          ¿Cuál es tu nombre completo?
-        </h2>
-      </motion.div>
+      <StepTitle color="gold">
+        ¿Cuál es tu nombre completo?
+      </StepTitle>
 
       <div className="relative">
         <input

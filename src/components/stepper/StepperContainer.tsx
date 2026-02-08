@@ -53,7 +53,7 @@ export function StepperContainer({
       className="min-h-screen flex items-center justify-center p-4"
       style={{
         background:
-          "linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(244,232,193,0.15) 50%, rgba(230,242,255,0.15) 100%)",
+          "linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(244,232,193,0.35) 50%, rgba(230,242,255,0.35) 100%)",
       }}
       onKeyDown={handleKeyPress}
     >
