@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import type { ReactNode } from "react";
 
 interface StepContentProps {
@@ -12,20 +12,20 @@ export function StepContent({
   stepIndex,
   currentStep,
 }: StepContentProps) {
+  if (stepIndex !== currentStep) return null;
+
   return (
     <AnimatePresence mode="wait">
-      {stepIndex === currentStep && (
-        <motion.div
-          key={stepIndex}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3 }}
-          className="w-full"
-        >
-          {children}
-        </motion.div>
-      )}
+      <motion.div
+        key={stepIndex}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+        className="w-full"
+      >
+        {children}
+      </motion.div>
     </AnimatePresence>
   );
 }

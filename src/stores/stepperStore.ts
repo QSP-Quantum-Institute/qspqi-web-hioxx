@@ -47,26 +47,20 @@ export const useStepperStore = create<StepperState>()(
         const errors: Partial<Record<keyof StepperData, string>> = {};
 
         if (step === 0) {
-          try {
-            stepperDataSchema.pick({ fullName: true }).parse({
-              fullName: data.fullName,
-            });
-          } catch (error: unknown) {
-            if (error instanceof Error) {
-              errors.fullName = error.message;
-            }
+          const result = stepperDataSchema.pick({ fullName: true }).safeParse({
+            fullName: data.fullName,
+          });
+          if (!result.success) {
+            errors.fullName = result.error.issues[0]?.message || "Error";
           }
         }
 
         if (step === 1) {
-          try {
-            stepperDataSchema.pick({ birthDate: true }).parse({
-              birthDate: data.birthDate,
-            });
-          } catch (error: unknown) {
-            if (error instanceof Error) {
-              errors.birthDate = error.message;
-            }
+          const result = stepperDataSchema.pick({ birthDate: true }).safeParse({
+            birthDate: data.birthDate,
+          });
+          if (!result.success) {
+            errors.birthDate = result.error.issues[0]?.message || "Error";
           }
         }
 

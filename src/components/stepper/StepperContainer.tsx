@@ -1,9 +1,9 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useStepperStore } from "../../stores";
-import { StepIndicator } from "./StepIndicator";
 import { StepContent } from "./StepContent";
-import { StepperNavigation } from "./StepperNavigation";
-import type { StepperStep, StepStatus } from "../../common/types/stepper";
+import type { StepperStep } from "../../common/types/stepper";
+import { ArrowRight } from "lucide-react";
+import { cn } from "../../utils";
 
 interface StepperContainerProps {
   steps: StepperStep[];
@@ -17,23 +17,17 @@ export function StepperContainer({
   const {
     currentStep,
     nextStep,
-    previousStep,
     validateStep,
     errors,
+    data,
   } = useStepperStore();
-
-  const getStepStatus = (index: number): StepStatus => {
-    if (index < currentStep) return "completed";
-    if (index === currentStep) return "active";
-    return "pending";
-  };
 
   const canGoNext = () => {
     if (currentStep === 0) {
-      return !errors.fullName && validateStep(0);
+      return data.fullName.trim().length > 0 && !errors.fullName;
     }
     if (currentStep === 1) {
-      return !errors.birthDate && validateStep(1);
+      return data.birthDate !== null && !errors.birthDate;
     }
     return false;
   };
@@ -48,56 +42,64 @@ export function StepperContainer({
     }
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && canGoNext()) {
+      handleNext();
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-gold-50/30 to-lightBlue-50/30 flex items-center justify-center p-4">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-gold-50/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-lightBlue-50/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-green-50/10 rounded-full blur-3xl" />
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative w-full max-w-4xl bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-8 md:p-12"
-      >
-        {/* Step Indicators */}
-        <div className="flex items-center justify-between mb-12">
-          {steps.map((step, index) => (
-            <StepIndicator
-              key={step.id}
-              step={index}
-              status={getStepStatus(index)}
-              label={step.label}
-              isLast={index === steps.length - 1}
-            />
-          ))}
-        </div>
-
-        {/* Step Content */}
-        <div className="min-h-[400px] flex items-center justify-center">
-          {steps.map((step, index) => (
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(244,232,193,0.15) 50%, rgba(230,242,255,0.15) 100%)",
+      }}
+      onKeyDown={handleKeyPress}
+    >
+      <div className="w-full max-w-lg relative">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="flex flex-col items-center"
+          >
             <StepContent
-              key={step.id}
-              stepIndex={index}
+              stepIndex={currentStep}
               currentStep={currentStep}
             >
-              <step.component />
+              {(() => {
+                const CurrentStepComponent = steps[currentStep].component;
+                return <CurrentStepComponent />;
+              })()}
             </StepContent>
-          ))}
-        </div>
 
-        {/* Navigation */}
-        <StepperNavigation
-          currentStep={currentStep}
-          totalSteps={steps.length}
-          onPrevious={previousStep}
-          onNext={handleNext}
-          canGoNext={canGoNext()}
-        />
-      </motion.div>
+            {/* Minimalist button */}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: canGoNext() ? 1 : 0.3 }}
+              transition={{ delay: 0.2 }}
+              onClick={handleNext}
+              disabled={!canGoNext()}
+              className={cn(
+                "mt-8",
+                "flex items-center justify-center",
+                "w-12 h-12",
+                "rounded-full",
+                "transition-all duration-300",
+                canGoNext()
+                  ? "bg-gold/20 hover:bg-gold/30 text-gold cursor-pointer"
+                  : "bg-gray-200/50 text-gray-400 cursor-not-allowed"
+              )}
+            >
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

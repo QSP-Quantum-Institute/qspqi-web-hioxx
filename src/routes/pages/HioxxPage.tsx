@@ -24,12 +24,9 @@ export function HioxxPage() {
 
   const handleComplete = () => {
     console.log("Stepper completed with data:", data);
-    // Aquí puedes agregar la lógica para procesar los datos
-    // Por ejemplo, enviar a una API, mostrar resultados, etc.
     alert(
       `¡Gracias ${data.fullName}! Tu información ha sido registrada. Fecha: ${data.birthDate}`
     );
-    // reset(); // Opcional: resetear el stepper
   };
 
   return (
