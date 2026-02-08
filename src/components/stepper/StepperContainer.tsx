@@ -57,7 +57,7 @@ export function StepperContainer({
       }}
       onKeyDown={handleKeyPress}
     >
-      <div className="w-full max-w-lg relative">
+      <div className="w-full max-w-4xl relative">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}

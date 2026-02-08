@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { cn } from "../../utils";
 import dayjs from "dayjs";
+import { Select } from "./Select";
 
 interface DatePickerProps {
   value: string | null;
   onChange: (date: string) => void;
-  onBlur?: () => void;
   error?: string;
   hasInteracted?: boolean;
 }
@@ -37,7 +36,6 @@ const days = Array.from({ length: 31 }, (_, i) => i + 1);
 export function DatePicker({
   value,
   onChange,
-  onBlur,
   error,
   hasInteracted = false,
 }: DatePickerProps) {
@@ -63,11 +61,10 @@ export function DatePicker({
     }
   }, [day, month, year, onChange]);
 
-  const handleDayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newDay = parseInt(e.target.value);
+  const handleDayChange = (val: string) => {
+    const newDay = parseInt(val);
     setDay(newDay);
     
-    // Validate if the day is valid for the selected month/year
     if (month !== "" && year !== "") {
       const maxDays = getDaysInMonth(year as number, month as number);
       if (newDay > maxDays) {
@@ -76,11 +73,10 @@ export function DatePicker({
     }
   };
 
-  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newMonth = parseInt(e.target.value);
+  const handleMonthChange = (val: string) => {
+    const newMonth = parseInt(val);
     setMonth(newMonth);
     
-    // Adjust day if it's invalid for the new month
     if (day !== "" && year !== "") {
       const maxDays = getDaysInMonth(year as number, newMonth);
       if ((day as number) > maxDays) {
@@ -89,11 +85,10 @@ export function DatePicker({
     }
   };
 
-  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newYear = parseInt(e.target.value);
+  const handleYearChange = (val: string) => {
+    const newYear = parseInt(val);
     setYear(newYear);
     
-    // Adjust day if it's invalid for the new month/year
     if (day !== "" && month !== "") {
       const maxDays = getDaysInMonth(newYear, month as number);
       if ((day as number) > maxDays) {
@@ -102,103 +97,44 @@ export function DatePicker({
     }
   };
 
+  const dayOptions = day !== "" && month !== "" && year !== ""
+    ? Array.from({ length: getDaysInMonth(year as number, month as number) }, (_, i) => i + 1)
+    : days;
+
   return (
     <div className="w-full">
-      <div className="flex items-center justify-center gap-4 md:gap-6">
+      <div className="flex items-center justify-center gap-4 md:gap-8">
         {/* Day */}
-        <div className="flex-1 max-w-[100px]">
-          <select
+        <div className="flex-1 max-w-[120px]">
+          <Select
             value={day}
-            onChange={handleDayChange}
-            onBlur={onBlur}
-            className={cn(
-              "w-full",
-              "px-4 py-4",
-              "text-2xl md:text-3xl",
-              "text-center",
-              "bg-transparent",
-              "border-0",
-              "border-b-2",
-              "focus:outline-none",
-              "transition-all duration-300",
-              "appearance-none",
-              "cursor-pointer",
-              error
-                ? "border-red-200/50 text-red-200"
-                : "border-gray-200/50 text-dark/70 focus:border-gold/50"
-            )}
-          >
-            <option value="">Día</option>
-            {days.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
+            onValueChange={handleDayChange}
+            options={dayOptions.map((d) => ({ value: d, label: String(d) }))}
+            placeholder="Día"
+            error={!!error}
+          />
         </div>
 
         {/* Month */}
-        <div className="flex-1 max-w-[150px]">
-          <select
+        <div className="flex-1 max-w-[180px]">
+          <Select
             value={month}
-            onChange={handleMonthChange}
-            onBlur={onBlur}
-            className={cn(
-              "w-full",
-              "px-4 py-4",
-              "text-2xl md:text-3xl",
-              "text-center",
-              "bg-transparent",
-              "border-0",
-              "border-b-2",
-              "focus:outline-none",
-              "transition-all duration-300",
-              "appearance-none",
-              "cursor-pointer",
-              error
-                ? "border-red-200/50 text-red-200"
-                : "border-gray-200/50 text-dark/70 focus:border-gold/50"
-            )}
-          >
-            <option value="">Mes</option>
-            {months.map((m, index) => (
-              <option key={index} value={index}>
-                {m}
-              </option>
-            ))}
-          </select>
+            onValueChange={handleMonthChange}
+            options={months.map((m, index) => ({ value: index, label: m }))}
+            placeholder="Mes"
+            error={!!error}
+          />
         </div>
 
         {/* Year */}
-        <div className="flex-1 max-w-[120px]">
-          <select
+        <div className="flex-1 max-w-[140px]">
+          <Select
             value={year}
-            onChange={handleYearChange}
-            onBlur={onBlur}
-            className={cn(
-              "w-full",
-              "px-4 py-4",
-              "text-2xl md:text-3xl",
-              "text-center",
-              "bg-transparent",
-              "border-0",
-              "border-b-2",
-              "focus:outline-none",
-              "transition-all duration-300",
-              "appearance-none",
-              "cursor-pointer",
-              error
-                ? "border-red-200/50 text-red-200"
-                : "border-gray-200/50 text-dark/70 focus:border-gold/50"
-            )}
-          >
-            <option value="">Año</option>
-            {years.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
+            onValueChange={handleYearChange}
+            options={years.map((y) => ({ value: y, label: String(y) }))}
+            placeholder="Año"
+            error={!!error}
+          />
         </div>
       </div>
 

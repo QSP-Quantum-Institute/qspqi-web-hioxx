@@ -27,8 +27,8 @@ export function StepTitle({
       transition={{ duration: 0.5 }}
       className={cn(
         "text-4xl md:text-6xl lg:text-7xl",
-        "font-bold",
-        "tracking-tight",
+        "font-light",
+        "tracking-wide",
         "text-center",
         "mb-12",
         "step-title-font",

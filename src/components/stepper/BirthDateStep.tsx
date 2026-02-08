@@ -30,18 +30,6 @@ export function BirthDateStep() {
     setLocalValue(date);
   };
 
-  const handleBlur = () => {
-    if (localValue) {
-      const result = birthDateSchema.safeParse(localValue);
-      if (!result.success) {
-        setError("birthDate", result.error.issues[0]?.message || "Error");
-      } else {
-        setError("birthDate", null);
-        updateData("birthDate", localValue);
-      }
-    }
-  };
-
   return (
     <div className="w-full">
       <StepTitle color="lightBlue">
@@ -51,7 +39,6 @@ export function BirthDateStep() {
       <DatePicker
         value={localValue}
         onChange={handleDateChange}
-        onBlur={handleBlur}
         error={errors.birthDate}
         hasInteracted={hasInteracted}
       />
