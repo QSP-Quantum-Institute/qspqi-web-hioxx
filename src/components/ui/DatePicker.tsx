@@ -56,38 +56,45 @@ export function DatePicker({
   const [month, setMonth] = useState<number | "">(getInitialState().month);
   const [year, setYear] = useState<number | "">(getInitialState().year);
 
-  // Update state when value prop changes (from external source)
-  // Using a ref to track if update is from internal change
+  // Track if we're updating from internal changes to avoid sync updates in effect
   const isInternalChangeRef = useRef(false);
   const previousValueRef = useRef<string | null>(value);
 
+  // Update state when value prop changes (from external source only)
   useEffect(() => {
-    // Skip if change was triggered internally or value hasn't changed
-    if (isInternalChangeRef.current || previousValueRef.current === value) {
-      if (isInternalChangeRef.current) {
-        isInternalChangeRef.current = false;
-      }
+    // Skip if this change was triggered internally
+    if (isInternalChangeRef.current) {
+      isInternalChangeRef.current = false;
       previousValueRef.current = value;
+      return;
+    }
+
+    // Skip if value hasn't actually changed
+    if (previousValueRef.current === value) {
       return;
     }
 
     previousValueRef.current = value;
 
-    if (value) {
-      const date = dayjs(value);
-      const newDay = date.date();
-      const newMonth = date.month();
-      const newYear = date.year();
-      
-      setDay(newDay);
-      setMonth(newMonth);
-      setYear(newYear);
-    } else {
-      // Reset if value becomes null
-      setDay("");
-      setMonth("");
-      setYear("");
-    }
+    // Use setTimeout to defer state updates and avoid synchronous setState in effect
+    const timeoutId = setTimeout(() => {
+      if (value) {
+        const date = dayjs(value);
+        const newDay = date.date();
+        const newMonth = date.month();
+        const newYear = date.year();
+        
+        setDay(newDay);
+        setMonth(newMonth);
+        setYear(newYear);
+      } else {
+        setDay("");
+        setMonth("");
+        setYear("");
+      }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [value]);
 
   useEffect(() => {
