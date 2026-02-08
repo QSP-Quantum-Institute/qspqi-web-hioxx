@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
 import { Select } from "./Select";
@@ -39,16 +39,54 @@ export function DatePicker({
   error,
   hasInteracted = false,
 }: DatePickerProps) {
-  const [day, setDay] = useState<number | "">("");
-  const [month, setMonth] = useState<number | "">("");
-  const [year, setYear] = useState<number | "">("");
-
-  useEffect(() => {
+  // Initialize state from value prop
+  const getInitialState = () => {
     if (value) {
       const date = dayjs(value);
-      setDay(date.date());
-      setMonth(date.month());
-      setYear(date.year());
+      return {
+        day: date.date() as number | "",
+        month: date.month() as number | "",
+        year: date.year() as number | "",
+      };
+    }
+    return { day: "" as number | "", month: "" as number | "", year: "" as number | "" };
+  };
+
+  const [day, setDay] = useState<number | "">(getInitialState().day);
+  const [month, setMonth] = useState<number | "">(getInitialState().month);
+  const [year, setYear] = useState<number | "">(getInitialState().year);
+
+  // Update state when value prop changes (from external source)
+  // Using a ref to track if update is from internal change
+  const isInternalChangeRef = useRef(false);
+  const previousValueRef = useRef<string | null>(value);
+
+  useEffect(() => {
+    // Skip if change was triggered internally or value hasn't changed
+    if (isInternalChangeRef.current || previousValueRef.current === value) {
+      if (isInternalChangeRef.current) {
+        isInternalChangeRef.current = false;
+      }
+      previousValueRef.current = value;
+      return;
+    }
+
+    previousValueRef.current = value;
+
+    if (value) {
+      const date = dayjs(value);
+      const newDay = date.date();
+      const newMonth = date.month();
+      const newYear = date.year();
+      
+      setDay(newDay);
+      setMonth(newMonth);
+      setYear(newYear);
+    } else {
+      // Reset if value becomes null
+      setDay("");
+      setMonth("");
+      setYear("");
     }
   }, [value]);
 
@@ -56,6 +94,7 @@ export function DatePicker({
     if (day !== "" && month !== "" && year !== "") {
       const date = dayjs(`${year}-${(month as number) + 1}-${day}`);
       if (date.isValid()) {
+        isInternalChangeRef.current = true;
         onChange(date.format("YYYY-MM-DD"));
       }
     }
@@ -97,9 +136,15 @@ export function DatePicker({
     }
   };
 
-  const dayOptions = day !== "" && month !== "" && year !== ""
-    ? Array.from({ length: getDaysInMonth(year as number, month as number) }, (_, i) => i + 1)
-    : days;
+  // Calculate valid days based on selected month and year
+  const dayOptions = useMemo(() => {
+    if (month !== "" && year !== "") {
+      const maxDays = getDaysInMonth(year as number, month as number);
+      return Array.from({ length: maxDays }, (_, i) => i + 1);
+    }
+    // If no month selected, show all 31 days
+    return days;
+  }, [month, year]);
 
   return (
     <div className="w-full">
@@ -123,6 +168,7 @@ export function DatePicker({
             options={months.map((m, index) => ({ value: index, label: m }))}
             placeholder="Mes"
             error={!!error}
+            searchable={true}
           />
         </div>
 
@@ -134,6 +180,7 @@ export function DatePicker({
             options={years.map((y) => ({ value: y, label: String(y) }))}
             placeholder="Año"
             error={!!error}
+            searchable={true}
           />
         </div>
       </div>
