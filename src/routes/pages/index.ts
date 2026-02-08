@@ -1,0 +1,1 @@
+export { HioxxPage } from "./HioxxPage";
