@@ -8,6 +8,13 @@ export interface StepperStep {
 export interface StepperData {
   fullName: string;
   birthDate: string | null;
+  birthTime: string | null;
+  bloodType: string | null;
+  country: string | null;
+  state: string | null;
+  city: string | null;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export interface StepperProps {

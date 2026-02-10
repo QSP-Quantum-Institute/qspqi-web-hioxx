@@ -4,3 +4,6 @@ export { StepContent } from "./StepContent";
 export { StepperNavigation } from "./StepperNavigation";
 export { NameStep } from "./NameStep";
 export { BirthDateStep } from "./BirthDateStep";
+export { BirthTimeStep } from "./BirthTimeStep";
+export { BloodTypeStep } from "./BloodTypeStep";
+export { LocationStep } from "./LocationStep";

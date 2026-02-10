@@ -29,9 +29,35 @@ export const birthDateSchema = z
     "Por favor ingresa una fecha de nacimiento válida"
   );
 
+export const birthTimeSchema = z
+  .string()
+  .min(1, "La hora de nacimiento es requerida")
+  .regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/, "Formato de hora inválido (debe ser HH:mm)");
+
+export const bloodTypeSchema = z
+  .string()
+  .min(1, "El tipo de sangre es requerido")
+  .refine(
+    (type) => ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].includes(type),
+    "Tipo de sangre inválido"
+  );
+
+export const locationSchema = z.object({
+  country: z.string().min(1, "El país es requerido"),
+  state: z.string().min(1, "El estado/departamento es requerido"),
+  city: z.string().min(1, "La ciudad es requerida"),
+});
+
 export const stepperDataSchema = z.object({
   fullName: fullNameSchema,
   birthDate: birthDateSchema,
+  birthTime: birthTimeSchema.nullable(),
+  bloodType: bloodTypeSchema.nullable(),
+  country: z.string().nullable(),
+  state: z.string().nullable(),
+  city: z.string().nullable(),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
 });
 
 export type StepperDataInput = z.infer<typeof stepperDataSchema>;
