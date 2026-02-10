@@ -4,6 +4,7 @@ import { useStepperStore } from "../../stores";
 import { StepTitle } from "../ui/StepTitle";
 import { CountryStateCitySelect } from "../ui/CountryStateCitySelect";
 import { LocationMap } from "../ui/LocationMap";
+import { ErrorBoundary } from "../common/ErrorBoundary";
 import { geocodeCity } from "../../services/geocoding";
 
 export function LocationStep() {
@@ -101,11 +102,22 @@ export function LocationStep() {
       )}
 
       <div className="w-full max-w-4xl mx-auto">
-        <LocationMap
-          latitude={data.latitude}
-          longitude={data.longitude}
-          city={localCity}
-        />
+        <ErrorBoundary
+          fallback={
+            <div className="w-full h-64 md:h-96 rounded-lg overflow-hidden bg-gray-100/50 flex items-center justify-center">
+              <p className="text-gray-400 text-center px-4">
+                No se pudo cargar el mapa. Por favor, intenta seleccionar la
+                ubicación nuevamente.
+              </p>
+            </div>
+          }
+        >
+          <LocationMap
+            latitude={data.latitude}
+            longitude={data.longitude}
+            city={localCity}
+          />
+        </ErrorBoundary>
       </div>
     </div>
   );
