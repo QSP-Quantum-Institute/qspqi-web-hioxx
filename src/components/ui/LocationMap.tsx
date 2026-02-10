@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import type { Map } from "leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -27,6 +26,8 @@ interface LocationMapProps {
   latitude: number | null;
   longitude: number | null;
   city?: string | null;
+  country?: string | null;
+  state?: string | null;
 }
 
 function MapUpdater({
@@ -47,157 +48,94 @@ function MapUpdater({
   return null;
 }
 
-export function LocationMap({ latitude, longitude, city }: LocationMapProps) {
-  const [mapKey, setMapKey] = useState<string>(() => {
-    // Generate initial key only once
-    return `map-${Math.random().toString(36).substring(2, 9)}`;
-  });
-  const [containerId] = useState<string>(() => {
-    // Generate initial container ID only once
-    return `map-container-${Math.random().toString(36).substring(2, 9)}`;
-  });
-  const [isMounted, setIsMounted] = useState(false);
-  const previousCoordsRef = useRef<{ lat: number; lon: number } | null>(null);
-  const mapInstanceRef = useRef<Map | null>(null);
-  const isInitializingRef = useRef(false);
+export function LocationMap({
+  latitude,
+  longitude,
+  city,
+  country,
+  state,
+}: LocationMapProps) {
+  const [isReady, setIsReady] = useState(false);
+  const [mapKey, setMapKey] = useState<string>("");
+  const previousCoordsRef = useRef<string>("");
+  const initializationAttemptedRef = useRef(false);
 
-  // Handle coordinate changes - remount map if coordinates change significantly
+  // Only render map if all location data is available
+  const shouldRenderMap =
+    country !== null &&
+    state !== null &&
+    city !== null &&
+    latitude !== null &&
+    longitude !== null;
+
+  // Create a unique key based on coordinates
+  const coordsKey = shouldRenderMap
+    ? `${latitude!.toFixed(4)}-${longitude!.toFixed(4)}`
+    : "";
+
+  // Handle map initialization
   useEffect(() => {
-    if (latitude === null || longitude === null) {
-      if (isMounted) {
-        setTimeout(() => {
-          setIsMounted(false);
-        }, 0);
-      }
-      if (mapInstanceRef.current) {
-        try {
-          mapInstanceRef.current.remove();
-        } catch {
-          // Ignore errors during cleanup
-        }
-        mapInstanceRef.current = null;
-      }
-      isInitializingRef.current = false;
-      return;
-    }
-
-    // Prevent multiple initializations
-    if (isInitializingRef.current) {
-      return;
-    }
-
-    const prev = previousCoordsRef.current;
-    const coordsChanged =
-      prev === null ||
-      Math.abs(prev.lat - latitude) > 0.01 ||
-      Math.abs(prev.lon - longitude) > 0.01;
-
-    if (coordsChanged) {
-      previousCoordsRef.current = { lat: latitude, lon: longitude };
-
-      // Unmount existing map if it exists
-      if (isMounted && mapInstanceRef.current) {
-        isInitializingRef.current = true;
-        try {
-          mapInstanceRef.current.remove();
-        } catch {
-          // Ignore errors during cleanup
-        }
-        mapInstanceRef.current = null;
-        setTimeout(() => {
-          setIsMounted(false);
-          isInitializingRef.current = false;
-        }, 0);
-      }
-
-      // Remount with new key
-      if (!isMounted) {
-        isInitializingRef.current = true;
-        const remountTimer = setTimeout(() => {
-          const timestamp = Date.now();
-          setTimeout(() => {
-            setMapKey(`map-${timestamp}`);
-            setTimeout(() => {
-              setIsMounted(true);
-              isInitializingRef.current = false;
-            }, 0);
-          }, 0);
-        }, 100);
-
-        return () => {
-          clearTimeout(remountTimer);
-          isInitializingRef.current = false;
-        };
-      }
-    } else if (!isMounted && prev === null) {
-      // Initial mount
-      isInitializingRef.current = true;
+    if (!shouldRenderMap) {
       setTimeout(() => {
-        setIsMounted(true);
-        isInitializingRef.current = false;
+        setIsReady(false);
       }, 0);
+      initializationAttemptedRef.current = false;
+      previousCoordsRef.current = "";
+      return;
     }
-  }, [latitude, longitude, isMounted]);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (mapInstanceRef.current) {
-        try {
-          mapInstanceRef.current.remove();
-        } catch {
-          // Ignore errors during cleanup
-        }
-        mapInstanceRef.current = null;
-      }
-      isInitializingRef.current = false;
-    };
-  }, []);
+    // Only initialize if coordinates changed
+    if (coordsKey === previousCoordsRef.current && isReady) {
+      return;
+    }
 
-  const handleMapReady = () => {
-    // Map is ready
-  };
+    // Prevent multiple initialization attempts
+    if (initializationAttemptedRef.current && coordsKey === previousCoordsRef.current) {
+      return;
+    }
 
-  if (latitude === null || longitude === null) {
-    return (
-      <div className="w-full h-64 md:h-96 rounded-lg overflow-hidden bg-gray-100/50 flex items-center justify-center">
-        <p className="text-gray-400 text-center px-4">
-          {city
-            ? "Selecciona una ciudad para ver su ubicación en el mapa"
-            : "Selecciona tu ubicación para ver el mapa"}
-        </p>
-      </div>
-    );
+    previousCoordsRef.current = coordsKey;
+    initializationAttemptedRef.current = true;
+
+    // Generate new key and mark as ready
+    setTimeout(() => {
+      setMapKey(`map-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`);
+      setTimeout(() => {
+        setIsReady(true);
+      }, 0);
+    }, 0);
+  }, [shouldRenderMap, coordsKey, isReady]);
+
+  // Don't render if location is incomplete
+  if (!shouldRenderMap || !isReady) {
+    return null;
   }
 
-  if (!isMounted) {
-    return (
-      <div className="w-full h-64 md:h-96 rounded-lg overflow-hidden bg-gray-100/50 flex items-center justify-center">
-        <p className="text-gray-400 text-center px-4">Cargando mapa...</p>
-      </div>
-    );
+  if (!mapKey) {
+    return null;
   }
 
   return (
     <div
-      id={containerId}
-      key={`${containerId}-${mapKey}`}
-      className="w-full h-64 md:h-96 rounded-lg overflow-hidden border border-gray-200/50"
+      key={mapKey}
+      className="w-full h-64 md:h-96 rounded-lg overflow-hidden border border-gold/20 shadow-sm bg-white/50"
+      style={{
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+      }}
     >
       <MapContainer
         key={mapKey}
-        center={[latitude, longitude]}
+        center={[latitude!, longitude!]}
         zoom={13}
         scrollWheelZoom={false}
-        className="w-full h-full"
+        className="w-full h-full rounded-lg"
         style={{ zIndex: 0 }}
-        whenReady={handleMapReady}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={[latitude, longitude]} />
+        <Marker position={[latitude!, longitude!]} />
         <MapUpdater latitude={latitude} longitude={longitude} />
       </MapContainer>
     </div>

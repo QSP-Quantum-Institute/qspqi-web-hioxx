@@ -3,3 +3,4 @@ export { DatePicker } from "./DatePicker";
 export { Select } from "./Select";
 export { CountryStateCitySelect } from "./CountryStateCitySelect";
 export { LocationMap } from "./LocationMap";
+export { CoordinatesDisplay } from "./CoordinatesDisplay";
