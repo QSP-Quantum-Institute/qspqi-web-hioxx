@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useStepperStore } from "../../stores";
 import { StepContent } from "./StepContent";
 import type { StepperStep } from "../../common/types/stepper";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
 import { cn } from "../../utils";
 
 interface StepperContainerProps {
@@ -10,17 +10,9 @@ interface StepperContainerProps {
   onComplete?: () => void;
 }
 
-export function StepperContainer({
-  steps,
-  onComplete,
-}: StepperContainerProps) {
-  const {
-    currentStep,
-    nextStep,
-    validateStep,
-    errors,
-    data,
-  } = useStepperStore();
+export function StepperContainer({ steps, onComplete }: StepperContainerProps) {
+  const { currentStep, nextStep, previousStep, validateStep, errors, data } =
+    useStepperStore();
 
   const canGoNext = () => {
     if (currentStep === 0) {
@@ -28,6 +20,22 @@ export function StepperContainer({
     }
     if (currentStep === 1) {
       return data.birthDate !== null && !errors.birthDate;
+    }
+    if (currentStep === 2) {
+      return data.birthTime !== null && !errors.birthTime;
+    }
+    if (currentStep === 3) {
+      return data.bloodType !== null && !errors.bloodType;
+    }
+    if (currentStep === 4) {
+      return (
+        data.country !== null &&
+        data.state !== null &&
+        data.city !== null &&
+        !errors.country &&
+        !errors.state &&
+        !errors.city
+      );
     }
     return false;
   };
@@ -67,36 +75,55 @@ export function StepperContainer({
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="flex flex-col items-center"
           >
-            <StepContent
-              stepIndex={currentStep}
-              currentStep={currentStep}
-            >
+            <StepContent stepIndex={currentStep} currentStep={currentStep}>
               {(() => {
                 const CurrentStepComponent = steps[currentStep].component;
                 return <CurrentStepComponent />;
               })()}
             </StepContent>
 
-            {/* Minimalist button */}
-            <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: canGoNext() ? 1 : 0.3 }}
-              transition={{ delay: 0.2 }}
-              onClick={handleNext}
-              disabled={!canGoNext()}
-              className={cn(
-                "mt-8",
-                "flex items-center justify-center",
-                "w-12 h-12",
-                "rounded-full",
-                "transition-all duration-300",
-                canGoNext()
-                  ? "bg-gold/20 hover:bg-gold/30 text-gold cursor-pointer"
-                  : "bg-gray-200/50 text-gray-400 cursor-not-allowed"
+            {/* Navigation buttons */}
+            <div className="mt-8 flex items-center gap-4">
+              {/* Back button */}
+              {currentStep > 0 && (
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  onClick={previousStep}
+                  className={cn(
+                    "flex items-center justify-center",
+                    "w-12 h-12",
+                    "rounded-full",
+                    "bg-gray-200/50 hover:bg-gray-300/50 text-gray-600",
+                    "transition-all duration-300",
+                    "cursor-pointer"
+                  )}
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </motion.button>
               )}
-            >
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
+
+              {/* Next button */}
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: canGoNext() ? 1 : 0.3 }}
+                transition={{ delay: 0.2 }}
+                onClick={handleNext}
+                disabled={!canGoNext()}
+                className={cn(
+                  "flex items-center justify-center",
+                  "w-12 h-12",
+                  "rounded-full",
+                  "transition-all duration-300",
+                  canGoNext()
+                    ? "bg-gold/20 hover:bg-gold/30 text-gold cursor-pointer"
+                    : "bg-gray-200/50 text-gray-400 cursor-not-allowed"
+                )}
+              >
+                <ArrowRight className="w-5 h-5" />
+              </motion.button>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
