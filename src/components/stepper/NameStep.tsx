@@ -26,12 +26,12 @@ export function NameStep() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHasInteracted(true);
-    setLocalValue(e.target.value);
+    setLocalValue(e.target.value.toUpperCase());
   };
 
   const handleBlur = () => {
     if (localValue.trim().length > 0) {
-      const result = fullNameSchema.safeParse(localValue);
+      const result = fullNameSchema.safeParse(localValue.toUpperCase());
       if (!result.success) {
         setError("fullName", result.error.issues[0]?.message || "Error");
       } else {
@@ -43,9 +43,7 @@ export function NameStep() {
 
   return (
     <div className="w-full">
-      <StepTitle color="gold">
-        ¿Cuál es tu nombre completo?
-      </StepTitle>
+      <StepTitle color="gold">¿Cuál es tu nombre completo?</StepTitle>
 
       <div className="relative">
         <input
