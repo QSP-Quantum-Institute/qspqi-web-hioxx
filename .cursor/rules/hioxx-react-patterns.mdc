@@ -1,0 +1,46 @@
+---
+description: Convenciones React y UI para HIOXX — componentes, Tailwind, español
+globs: "**/*.tsx"
+alwaysApply: false
+---
+
+# HIOXX React Patterns
+
+## Components
+
+- Functional components only
+- Extract custom hooks for reusable logic
+- Colocate step-specific components in `features/intake/components/`
+
+## Styling
+
+- Tailwind CSS with project palette: gold, lightBlue, green, red, dark
+- Use `cn()` from `src/utils/cn.ts` for conditional classes
+- Framer Motion for transitions (step changes, dropdowns, errors)
+- Minimalist aesthetic: centered text, underline inputs, soft gradients
+
+## UI Language
+
+- All user-facing text in Spanish
+- Error messages in Spanish via Zod schemas
+
+## Example step component pattern
+
+```tsx
+export function ExampleStep() {
+  const { data, updateData, errors, setError } = useStepperStore();
+  const [localValue, setLocalValue] = useState(data.field);
+  const [hasInteracted, setHasInteracted] = useState(false);
+
+  // Validate on change after first interaction
+  useEffect(() => { /* validate + updateData */ }, [localValue, hasInteracted]);
+
+  return (
+    <div className="w-full">
+      <StepTitle color="gold">Pregunta?</StepTitle>
+      {/* input */}
+      {errors.field && hasInteracted && <motion.p>{errors.field}</motion.p>}
+    </div>
+  );
+}
+```

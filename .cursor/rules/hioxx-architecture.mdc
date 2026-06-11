@@ -1,0 +1,45 @@
+---
+description: Patrones de arquitectura modular para HIOXX — registry, engines, módulos de cálculo
+globs: src/features/**
+alwaysApply: false
+---
+
+# HIOXX Architecture
+
+## Calculation Module Pattern
+
+Each calculation type is a self-contained module implementing `CalculationModule`:
+
+- `*.engine.ts` — Pure business logic, no React imports
+- `*.module.ts` — Implements CalculationModule interface
+- `*ResultsView.tsx` — React component for output display
+
+## Registry
+
+All modules register in `src/features/calculations/core/registry.ts`. Never import modules directly from other modules.
+
+```typescript
+// ✅ Register in registry.ts
+import { pitagoricoModule } from "../pitagorico/pitagorico.module";
+
+// ❌ Don't import pitagorico engine from hebreo module
+import { calculatePitagorico } from "../pitagorico/pitagorico.engine";
+```
+
+## Adding a new calculation
+
+1. Create spec in `docs/specs/calculations/{name}.md`
+2. Create folder `src/features/calculations/{name}/`
+3. Implement engine → module → ResultsView
+4. Register in registry.ts
+5. Update spec with implemented logic
+
+## Data flow
+
+```
+Intake (stepper) → hioxxSessionStore (profile) → CalculationModule.calculate(profile) → ResultsView
+```
+
+## Guards
+
+Use `isProfileComplete()` before allowing access to summary, calculation select, or results routes.
