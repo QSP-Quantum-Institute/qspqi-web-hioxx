@@ -34,17 +34,20 @@ Calculadora especializada del QSP Quantum Institute. Proyecto React/Vite standal
 
 ## Reglas clave
 
+- **Nunca asumir** — preguntar cuando falte información (ver `.cursor/rules/hioxx-agent-discipline.mdc`)
+- **Prohibido `any`** — tipado estricto (ver `.cursor/rules/hioxx-typescript-standards.mdc`)
 - Lógica de negocio **solo** en `*.engine.ts`, nunca en componentes React
 - Cada módulo de cálculo es independiente; no acoplar módulos entre sí
 - UI en español
 - Actualizar spec MD cuando se implemente lógica de negocio
 - Nuevos módulos: seguir checklist en `.cursor/skills/hioxx-development/MODULE-GUIDE.md`
+- Diseño por cálculo: ver `docs/specs/DESIGN-SYSTEM.md`
 
 ## Tipos de cálculo
 
 | Tipo | ID | Estado |
 |------|----|--------|
-| Pitagórico | `pitagorico` | Activo (stub) |
+| Pitagórico | `pitagorico` | Activo (Secciones 1 y 2) |
 | Estudio Cuántico | `estudio-cuantico` | Próximamente |
 | Hebreo | `hebreo` | Próximamente |
 | Caldeo | `caldeo` | Próximamente |

@@ -1,0 +1,37 @@
+---
+description: Estándares TypeScript HIOXX — tipado estricto, modularidad, prohibido any
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# HIOXX TypeScript Standards
+
+## Tipado
+
+- **Prohibido `any`** — usar `unknown` + type guards, genéricos o tipos explícitos
+- **Prohibido `@ts-ignore`** salvo justificación documentada en comentario
+- Interfaces de resultado tipadas (`PitagoricoResult`, `WordVibrationRow`, etc.)
+- Usar `const satisfies` para maps de configuración (homólogos, temas)
+
+## Modularidad
+
+- Lógica de negocio **solo** en `*.engine.ts` (funciones puras, sin React)
+- Configs separadas: `*.homolog.ts`, `calculationThemes.ts`
+- Componentes pequeños y reutilizables en `components/ui/`
+- Secciones de resultados en `{modulo}/components/`
+
+## Reutilización
+
+- Homólogos: `calculations/core/letterHomolog.*`
+- Temas: `calculations/core/calculationThemes.ts`
+- Primitivos UI: `CalculationAccordion`, `LetterNumberGrid`
+
+## Ejemplo
+
+```typescript
+// ✅ GOOD
+export function mapCharacter(char: string, map: LetterHomologMap): number | null;
+
+// ❌ BAD
+export function mapCharacter(char: any, map: any): any;
+```

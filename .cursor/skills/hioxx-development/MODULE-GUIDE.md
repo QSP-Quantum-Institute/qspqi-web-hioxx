@@ -74,3 +74,21 @@ Copiar estructura de `docs/specs/calculations/pitagorico.md`:
 - Estado, descripción, datos requeridos
 - Reglas de negocio, algoritmo, formato de salida
 - Casos de prueba, notas de implementación
+
+## Homólogos letra-número
+
+Cada tipo de cálculo define su mapa en `{nombre}.homolog.ts`:
+
+```typescript
+// pitagorico/pitagorico.homolog.ts
+export const PITAGORICO_HOMOLOG_MAP = { ... } as const satisfies LetterHomologMap;
+```
+
+Utils compartidos en `calculations/core/letterHomolog.utils.ts`.
+
+## Secciones de resultados (UI)
+
+- Usar `CalculationAccordion` para secciones expandibles
+- Componentes de sección en `{modulo}/components/`
+- Tema via `calculationThemes.ts` + `DESIGN-SYSTEM.md`
+- Contenedor resultados: `max-w-5xl`

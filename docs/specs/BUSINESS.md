@@ -8,7 +8,7 @@ HIOXX es una calculadora especializada del QSP Quantum Institute. No realiza ope
 
 | Tipo | ID | Estado |
 |------|-----|--------|
-| Cálculo Pitagórico | `pitagorico` | Activo (lógica pendiente de especificación) |
+| Cálculo Pitagórico | `pitagorico` | Activo (Secciones 1 y 2) |
 | Cálculo Estudio Cuántico | `estudio-cuantico` | Próximamente |
 | Cálculo Hebreo | `hebreo` | Próximamente |
 | Cálculo Caldeo | `caldeo` | Próximamente |
@@ -129,17 +129,19 @@ interface HioxxProfile {
 
 ---
 
-## Cálculo Pitagórico — [PENDIENTE]
+## Cálculo Pitagórico
 
-> La lógica de negocio del Cálculo Pitagórico aún no ha sido especificada.
-> Ver [`calculations/pitagorico.md`](calculations/pitagorico.md) para la plantilla de especificación.
+Implementado parcialmente. Ver [`calculations/pitagorico.md`](calculations/pitagorico.md).
 
-Secciones pendientes:
-- Reglas de conversión de letras/números
-- Tablas de referencia
-- Fórmulas de reducción numérica
-- Interpretación de resultados
-- Formato de salida esperado
+**Secciones actuales:**
+1. Homólogo letra-número (nombre → valores pitagóricos)
+2. Estructura de Vibración Atómica (conteo y suma por palabra, total)
+
+**Relación con Estudio Cuántico:** El pitagórico define fundamentos reutilizables (homólogos, desglose por palabra). El Estudio Cuántico consumirá estos resultados vía tipos/utils en `calculations/core/`.
+
+**Secciones futuras:** [PENDIENTE — se documentarán en pitagorico.md]
+
+**Diseño:** Tema `gold`, acordeón de secciones. Ver [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md).
 
 ---
 

@@ -133,6 +133,28 @@ Implementados como componentes `<RouteGuard>` o loaders de React Router.
 
 Ver también: `.cursor/skills/hioxx-development/MODULE-GUIDE.md`
 
+## Sistema de homólogos letra-número
+
+Cada tipo de cálculo define su tabla en `{nombre}.homolog.ts`. Utils compartidos:
+
+| Archivo | Rol |
+|---------|-----|
+| `core/letterHomolog.types.ts` | `LetterHomologMap`, `LetterCell` |
+| `core/letterHomolog.utils.ts` | `parseNameWords`, `mapCharacter`, `buildLetterBreakdown` |
+| `{modulo}/{modulo}.homolog.ts` | Mapa específico del cálculo |
+
+Los dígitos 0-9 son configurables por tipo. Valores no confirmados: marcar `[PENDIENTE]` en spec.
+
+## Temas y UI de resultados
+
+| Archivo | Rol |
+|---------|-----|
+| `core/calculationThemes.ts` | Color primario por `CalculationType` |
+| `components/ui/CalculationAccordion.tsx` | Secciones expandibles |
+| `components/ui/LetterNumberGrid.tsx` | Grid letra/número |
+
+Ver `docs/specs/DESIGN-SYSTEM.md`.
+
 ## Dependencias clave
 
 | Paquete | Uso |

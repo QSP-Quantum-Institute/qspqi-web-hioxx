@@ -25,17 +25,21 @@ src/features/calculations/{name}/
 
 ## Key Rules
 
+- **Never assume** — ask questions when spec is incomplete (see `hioxx-agent-discipline.mdc`)
+- **No `any`** — strict typing (see `hioxx-typescript-standards.mdc`)
 - Business logic ONLY in `*.engine.ts`
 - Never couple calculation modules to each other
 - Register all modules in `core/registry.ts`
 - UI text in Spanish
 - Validate with Zod schemas in `features/intake/schemas/`
+- Letter homolog maps: configurable per calculation type in `*.homolog.ts`
+- Design themes: `docs/specs/DESIGN-SYSTEM.md` + `calculationThemes.ts`
 
 ## Current Status
 
 - Intake stepper: implemented (5 steps)
 - Post-intake flow: summary → calculation select → results
-- Pitagorico: active stub (awaiting business spec)
+- Pitagorico: active (Sections 1 and 2 implemented; extensible)
 - Other 3 calculations: coming-soon stubs
 
 ## Adding a New Calculation

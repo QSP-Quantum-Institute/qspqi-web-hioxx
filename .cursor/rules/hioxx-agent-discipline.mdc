@@ -1,0 +1,34 @@
+---
+description: Disciplina de agente HIOXX — no asumir, siempre preguntar, contextualizar antes de implementar
+alwaysApply: true
+---
+
+# HIOXX Agent Discipline
+
+## Regla fundamental
+
+**Nunca asumir información.** Siempre hacer preguntas cuando falte contexto.
+
+## Antes de implementar
+
+1. Leer `AGENTS.md` → `docs/specs/BUSINESS.md` → spec del módulo relevante
+2. Si la spec tiene `[PENDIENTE]`, preguntar al usuario antes de inventar valores
+3. Usar `AskQuestion` para decisiones que afecten lógica de negocio, diseño o UX
+
+## Qué NO asumir
+
+- Tablas homólogo letra-número (cada tipo de cálculo tiene la suya)
+- Homólogos de dígitos 0-9 si no están en spec
+- Reglas de reducción numérica, interpretaciones o fórmulas futuras
+- Colores, tipografía o layout sin consultar `DESIGN-SYSTEM.md`
+- Comportamiento UI (acordeón, scroll, animaciones) sin confirmación
+
+## Al implementar lógica nueva
+
+- Actualizar el MD de spec correspondiente en `docs/specs/`
+- Marcar explícitamente `[PENDIENTE — confirmar con negocio]` lo no confirmado
+- Documentar casos de prueba de referencia en la spec
+
+## Objetivo
+
+Contextualizar al agente de la mejor forma posible para **evitar alucinaciones**.

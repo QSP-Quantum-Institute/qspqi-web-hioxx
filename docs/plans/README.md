@@ -13,6 +13,7 @@ Este directorio contiene planes de implementación para fases del proyecto HIOXX
 | Plan | Estado | Descripción |
 |------|--------|-------------|
 | Estructuración inicial | Completado | Arquitectura modular, specs, agent context, flujo post-captura |
+| Cálculo Pitagórico S1-S2 | Completado | Homólogos, engine, UI acordeón, reglas agente, diseño |
 
 ## Cómo crear un nuevo plan
 
