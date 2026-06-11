@@ -4,7 +4,13 @@
 
 ## Descripción
 
-Cálculo basado en principios del estudio cuántico aplicados a los datos personales del sujeto. Integra fecha, hora y ubicación de nacimiento con factores cuánticos específicos.
+Cálculo basado en principios del estudio cuántico. **Consume fundamentos del Cálculo Pitagórico** (homólogos, desglose por palabra, sumas) como base estructural.
+
+## Dependencia del Pitagórico
+
+- Reutilizar tipos y utils de `calculations/core/letterHomolog.*`
+- No importar UI del módulo pitagórico; solo lógica compartida en core
+- El pitagórico debe mantenerse conciso y exportable para composición
 
 ## Datos de entrada requeridos
 
@@ -29,11 +35,11 @@ Cálculo basado en principios del estudio cuántico aplicados a los datos person
 
 > [PENDIENTE]
 
-## Casos de prueba de referencia
+## Diseño
 
-> [PENDIENTE]
+Tema reservado: `lightBlue` (ver DESIGN-SYSTEM.md)
 
 ## Notas para implementación
 
 - Módulo stub registrado con `status: "coming-soon"`
-- No implementar engine hasta recibir spec de negocio
+- Homólogo propio en `{nombre}.homolog.ts` cuando se implemente
