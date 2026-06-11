@@ -7,8 +7,8 @@ interface CountryStateCitySelectProps {
   country: string | null;
   state: string | null;
   city: string | null;
-  onCountryChange: (country: string) => void;
-  onStateChange: (state: string) => void;
+  onCountryChange: (isoCode: string, name: string) => void;
+  onStateChange: (isoCode: string, name: string) => void;
   onCityChange: (city: string) => void;
   errors?: {
     country?: string;
@@ -58,7 +58,7 @@ export function CountryStateCitySelect({
         }, 0);
         // Reset state and city only when country changes
         if (previousCountry !== null) {
-          onStateChange("");
+          onStateChange("", "");
           onCityChange("");
         }
       } else {
@@ -66,7 +66,7 @@ export function CountryStateCitySelect({
           setStates([]);
         }, 0);
         if (previousCountry !== null) {
-          onStateChange("");
+          onStateChange("", "");
           onCityChange("");
         }
       }
@@ -128,13 +128,23 @@ export function CountryStateCitySelect({
     [cities]
   );
 
+  const handleCountryChange = (isoCode: string) => {
+    const selected = countryOptions.find((o) => o.value === isoCode);
+    onCountryChange(isoCode, selected?.label ?? isoCode);
+  };
+
+  const handleStateChange = (isoCode: string) => {
+    const selected = stateOptions.find((o) => o.value === isoCode);
+    onStateChange(isoCode, selected?.label ?? isoCode);
+  };
+
   return (
     <div className="w-full space-y-6">
       {/* Country */}
       <div className="w-full">
         <Select
           value={country || ""}
-          onValueChange={onCountryChange}
+          onValueChange={handleCountryChange}
           options={countryOptions}
           placeholder="País"
           error={!!errors?.country}
@@ -152,7 +162,7 @@ export function CountryStateCitySelect({
         <div className="w-full">
           <Select
             value={state || ""}
-            onValueChange={onStateChange}
+            onValueChange={handleStateChange}
             options={stateOptions}
             placeholder="Estado/Departamento"
             error={!!errors?.state}
