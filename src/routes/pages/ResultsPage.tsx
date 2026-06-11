@@ -5,7 +5,10 @@ import { useHioxxSessionStore } from "../../stores/hioxxSessionStore";
 import { useStepperStore } from "../../features/intake/store/stepperStore";
 import { getModule } from "../../features/calculations/core/registry";
 import { AppRoutes } from "../../common/enums";
-import type { CalculationType, HioxxProfile } from "../../features/calculations/core/types";
+import type {
+  CalculationType,
+  HioxxProfile,
+} from "../../features/calculations/core/types";
 import { cn } from "../../utils/cn";
 
 export function ResultsPage() {
@@ -47,7 +50,7 @@ export function ResultsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-3xl"
+        className="w-full max-w-5xl"
       >
         <ResultsView result={result} profile={profile as HioxxProfile} />
 

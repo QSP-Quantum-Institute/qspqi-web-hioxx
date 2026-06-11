@@ -1,5 +1,11 @@
 import type { HioxxProfile } from "../core/types";
-import type { PitagoricoResult } from "./pitagorico.engine";
+import type { PitagoricoResult } from "./pitagorico.types";
+import { getCalculationTheme } from "../core/calculationThemes";
+import { CalculationThemeProvider } from "../core/CalculationThemeProvider";
+import { CalculationAccordion } from "../../../components/ui/CalculationAccordion";
+import { LetterHomologSection } from "./components/LetterHomologSection";
+import { AtomicVibrationSection } from "./components/AtomicVibrationSection";
+import { cn } from "../../../utils/cn";
 
 interface Props {
   result: PitagoricoResult;
@@ -7,17 +13,58 @@ interface Props {
 }
 
 export function PitagoricoResultsView({ result, profile }: Props) {
+  const theme = getCalculationTheme("pitagorico");
+
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-8 text-center">
-      <h2 className="text-3xl font-light text-dark/80 step-title-font">
-        Cálculo Pitagórico
-      </h2>
-      <p className="text-lg text-dark/60 font-light">
-        Resultado para <span className="text-gold">{profile.fullName}</span>
-      </p>
-      <div className="p-8 bg-gold/5 rounded-lg border border-gold/20">
-        <p className="text-dark/50 font-light">{result.message}</p>
+    <CalculationThemeProvider theme={theme}>
+      <div className="w-full space-y-8">
+        <header className="text-center space-y-2">
+          <h2
+            className={cn(
+              "text-3xl md:text-4xl font-light display-font tracking-wide",
+              theme.textAccentClass
+            )}
+          >
+            Cálculo Pitagórico
+          </h2>
+          <p className="text-base text-dark/50 font-light">
+            Resultado para{" "}
+            <span
+              className={cn(
+                "display-font tracking-wider",
+                theme.textAccentClass
+              )}
+            >
+              {profile.fullName}
+            </span>
+          </p>
+        </header>
+
+        <CalculationAccordion
+          borderClass={theme.borderClass}
+          textAccentClass={theme.textAccentClass}
+          items={[
+            {
+              id: "section1",
+              title: "Homólogo letra-número",
+              defaultOpen: true,
+              content: <LetterHomologSection result={result} theme={theme} />,
+            },
+            {
+              id: "section2",
+              title: "Estructura de Vibración Atómica",
+              defaultOpen: true,
+              content: <AtomicVibrationSection result={result} theme={theme} />,
+            },
+            {
+              id: "section-future",
+              title: "Próximas secciones",
+              disabled: true,
+              content: null,
+            },
+          ]}
+        />
       </div>
-    </div>
+    </CalculationThemeProvider>
   );
 }
